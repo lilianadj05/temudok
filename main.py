@@ -15,6 +15,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Mengambil PORT dari Render (Default ke 10000 jika lokal)
 PORT = int(os.getenv("PORT", 10000))
+DATABASE_NAME = os.getenv("DATABASE_URL", "temudok.db")
 
 # --- 2. SETUP CORS ---
 app.add_middleware(
@@ -211,3 +212,4 @@ if __name__ == '__main__':
     import uvicorn
     # Gunakan host 0.0.0.0 agar bisa diakses secara publik lewat Render
     uvicorn.run(app, host="0.0.0.0", port=PORT)
+
