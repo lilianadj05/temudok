@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommendation Result | TemuDok</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <nav class="navbar">
+        <div class="logo"><img src="/assets/logo.png" alt="TemuDok Logo"></div>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="doctors.html">Doctors</a></li>
+            <li><a href="articles.html">Articles</a></li>
+            <li><a href="reminders.html">My Reminders</a></li>
+        </ul>
+        
+        <div class="user-dropdown">
+            <span class="user-name" id="userDisplay">Hi, User! ▼</span>
+            <div class="dropdown-content">
+                <a href="profile.html">My Profile</a>
+                <a href="#" id="logoutBtn">Sign Out</a>
+            </div>
+        </div>
+    </nav>
+
+  <section class="results-page">
+    <div class="result-card">
+        <div class="result-title">Based on your symptoms, we recommend:</div>
+        
+        <div class="doctor-summary">
+            <img src="" id="doctorImage" class="appointment-doctor-img" alt="Doctor Photo" onerror="this.src='/assets/default_doctor.png'">
+            
+            <div class="doctor-name-title" id="doctorName">Loading Doctor...</div>
+            
+            <div id="specialistResult" class="specialist-badge">...</div>
+        </div>
+        <p class="result-desc">
+            We have analyzed your symptoms and identified the most suitable specialist for your condition. 
+            You can book an appointment directly below.
+        </p>
+
+        <div class="btn-group">
+            <a href="doctor_recommendation.html" class="btn-outline">Check Again</a>
+            <a href="#" id="bookBtn" class="btn-primary-action">Book Appointment</a>
+        </div>
+    </div>
+  </section>
+
+  <script src="/static/results.js"></script>
+  <script src="/static/home.js"></script>
+</body>
+</html>
