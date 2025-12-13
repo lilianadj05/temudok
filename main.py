@@ -3,12 +3,20 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
-import pickle
-import numpy as np
+import os
+from dotenv import load_dotenv
 
 app = FastAPI()
 
-# 1. SETUP CORS
+load_dotenv()
+
+# --- 1. SETUP BASE DIRECTORY ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Mengambil PORT dari Render (Default ke 10000 jika lokal)
+PORT = int(os.getenv("PORT", 10000))
+
+# --- 2. SETUP CORS ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,21 +24,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 2. MOUNT STATIC FILES
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-app.mount("/templates", StaticFiles(directory="templates"), name="templates")
+# --- 3. MOUNT STATIC FILES (Gunakan path absolut agar terbaca di server) ---
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+app.mount("/assets", StaticFiles(directory=os.path.join(BASE_DIR, "assets")), name="assets")
+app.mount("/templates", StaticFiles(directory=os.path.join(BASE_DIR, "templates")), name="templates")
 
-# 3. LOAD MODEL
-try:
-    model = pickle.load(open("model.pkl", "rb"))
-    print("✅ Model AI berhasil dimuat.")
-except Exception as e:
-    model = None
-    print(f"⚠️ Warning: Model tidak ditemukan atau error versi ({e}). Fitur prediksi akan default.")
+# --- 4. DATABASE HELPER ---
+def get_db_connection():
+    db_path = os.path.join(BASE_DIR, "temudok.db")
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    return conn
 
-# 4. LIST GEJALA (Disesuaikan dengan Training Data - 92 Gejala)
-# PENTING: Urutan ini harus SAMA PERSIS dengan df.columns di Notebook (Cell 33)
+# Inisialisasi DB saat start-up
+def init_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, email TEXT UNIQUE, password TEXT)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, patient_name TEXT, specialist TEXT, doctor_name TEXT, date TEXT, time TEXT, notes TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)')
+    conn.commit()
+    conn.close()
+
+init_db()
+
+# --- 5. DATA DOKTER & GEJALA ---
 SYMPTOMS_LIST = [
     'itching', 'skin_rash', 'nodal_skin_eruptions', 'dischromic _patches',
     'continuous_sneezing', 'chills', 'stomach_pain', 'acidity',
@@ -60,7 +77,6 @@ SYMPTOMS_LIST = [
     'red_sore_around_nose', 'yellow_crust_ooze'
 ]
 
-# 5. DATA DOKTER
 DOCTORS_DATA = {
     "Hepatologist": {"name": "dr. Susilo, Sp.PD-KH", "image": "/assets/doctors_page/Susilo.jpg"},
     "Gastroenterologist": {"name": "dr. Roberto, Sp.PD-KGEH", "image": "/assets/doctors_page/Roberto.jpg"},
@@ -74,36 +90,7 @@ DOCTORS_DATA = {
     "General Practitioner": {"name": "dr. Vira Amanda", "image": "/assets/doctors_page/Vira Amanda.jpg"}
 }
 
-# 6. DATABASE SETUP
-def init_db():
-    conn = sqlite3.connect('temudok.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            username TEXT, 
-            email TEXT UNIQUE, 
-            password TEXT
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS appointments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            patient_name TEXT, 
-            specialist TEXT, 
-            doctor_name TEXT, 
-            date TEXT, 
-            time TEXT, 
-            notes TEXT, 
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-init_db()
-
-# ================= ROUTES =================
+# --- 6. ROUTES ---
 
 @app.get("/")
 def home():
@@ -111,98 +98,83 @@ def home():
 
 @app.get("/features")
 def get_features():
-    # Kirim daftar gejala yang SUDAH SINKRON dengan model
     return {"features": SYMPTOMS_LIST}
 
 @app.post("/signup")
 async def signup(request: Request):
     try:
         data = await request.json()
-        print(f"📝 Signup Attempt: {data.get('email')}")
-        
-        conn = sqlite3.connect('temudok.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
-        
         cursor.execute("SELECT * FROM users WHERE email = ?", (data['email'],))
         if cursor.fetchone():
             conn.close()
             return JSONResponse({"status": "error", "message": "Email sudah terdaftar!"})
-            
-        cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
-                       (data['username'], data['email'], data['password']))
+        cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", (data['username'], data['email'], data['password']))
         conn.commit()
         conn.close()
         return JSONResponse({"status": "success", "message": "Akun berhasil dibuat!"})
     except Exception as e:
-        print(f"❌ Error Signup: {e}")
         return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
 
 @app.post("/login")
 async def login(request: Request):
     try:
         data = await request.json()
-        conn = sqlite3.connect('temudok.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users WHERE email = ? AND password = ?", (data['email'], data['password']))
         user = cursor.fetchone()
         conn.close()
-        
         if user:
-            return JSONResponse({"status": "success", "username": user[1]})
+            return JSONResponse({"status": "success", "username": user['username']})
         return JSONResponse({"status": "error", "message": "Email atau Password salah!"}, status_code=401)
     except Exception as e:
         return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
 
 @app.post("/predict_specialist")
 async def predict_specialist(request: Request):
+    # LAZY IMPORT & LOAD (PENTING UNTUK RENDER)
+    import pickle
+    import numpy as np
+    
     data = await request.json()
     selected_symptoms = data.get("symptoms", [])
     
-    predicted_specialist = "General Practitioner"
-    
-    if model:
-        try:
-            # Buat vektor input dengan panjang 92 (sesuai training)
-            input_vector = [0] * len(SYMPTOMS_LIST)
-            
-            for s in selected_symptoms:
-                if s in SYMPTOMS_LIST:
-                    # Cari index gejala tersebut di list yang benar
-                    idx = SYMPTOMS_LIST.index(s)
-                    input_vector[idx] = 1
-            
-            # Debug: Cek vektor sebelum prediksi
-            # print(f"Input Vector: {input_vector}")
-            
-            prediction = model.predict(np.array([input_vector]))[0]
-            predicted_specialist = str(prediction).strip()
-            print(f"✅ Predicted: {predicted_specialist}")
-            
-        except Exception as e:
-            print(f"⚠️ Prediksi Error: {e}")
-            # Jika error (misal jumlah kolom beda), tetap lanjut dengan default
-            pass
-
-    doctor_info = DOCTORS_DATA.get(predicted_specialist, DOCTORS_DATA["General Practitioner"])
-
-    return JSONResponse({
-        "status": "success",
-        "specialist": predicted_specialist,
-        "doctor_name": doctor_info["name"],
-        "doctor_image": doctor_info["image"]
-    })
+    try:
+        model_path = os.path.join(BASE_DIR, "model.pkl")
+        model = pickle.load(open(model_path, "rb"))
+        
+        input_vector = [0] * len(SYMPTOMS_LIST)
+        for s in selected_symptoms:
+            if s in SYMPTOMS_LIST:
+                idx = SYMPTOMS_LIST.index(s)
+                input_vector[idx] = 1
+        
+        prediction = model.predict(np.array([input_vector]))[0]
+        predicted_specialist = str(prediction).strip()
+        doctor_info = DOCTORS_DATA.get(predicted_specialist, DOCTORS_DATA["General Practitioner"])
+        
+        return {
+            "status": "success",
+            "specialist": predicted_specialist,
+            "doctor_name": doctor_info["name"],
+            "doctor_image": doctor_info["image"]
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 @app.post("/book_appointment")
 async def book_appointment(request: Request):
     try:
         data = await request.json()
-        conn = sqlite3.connect('temudok.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("INSERT INTO appointments (patient_name, specialist, doctor_name, date, time, notes) VALUES (?, ?, ?, ?, ?, ?)",
                        (data['name'], data['specialist'], data['doctor'], data['date'], data['time'], data['notes']))
         conn.commit()
         conn.close()
-        return JSONResponse({"status": "success", "message": "Berhasil booking!"})
+        return JSONResponse({"status": "success"})
     except Exception as e:
         return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
 
@@ -210,26 +182,14 @@ async def book_appointment(request: Request):
 async def get_reminders(request: Request):
     try:
         patient_name = request.query_params.get('patient', '')
-        conn = sqlite3.connect('temudok.db')
-        conn.row_factory = sqlite3.Row
+        conn = get_db_connection()
         cursor = conn.cursor()
-        
         if patient_name:
-            cursor.execute("SELECT * FROM appointments WHERE patient_name LIKE ? ORDER BY date DESC, time DESC", (f"%{patient_name}%",))
+            cursor.execute("SELECT * FROM appointments WHERE patient_name LIKE ? ORDER BY date DESC", (f"%{patient_name}%",))
         else:
-            cursor.execute("SELECT * FROM appointments ORDER BY date DESC, time DESC")
-            
+            cursor.execute("SELECT * FROM appointments ORDER BY date DESC")
         rows = cursor.fetchall()
-        data_list = []
-        for row in rows:
-            data_list.append({
-                "id": row["id"],
-                "title": row['doctor_name'],
-                "subtitle": row['specialist'],
-                "time": f"{row['date']} at {row['time']}",
-                "category": "checkup",
-                "notes": row['notes']
-            })
+        data_list = [{"id": r["id"], "title": r['doctor_name'], "subtitle": r['specialist'], "time": f"{r['date']} at {r['time']}", "notes": r['notes']} for r in rows]
         conn.close()
         return JSONResponse({"status": "success", "reminders": data_list})
     except Exception as e:
@@ -238,29 +198,16 @@ async def get_reminders(request: Request):
 @app.delete("/delete_appointment/{item_id}")
 async def delete_appointment(item_id: int):
     try:
-        conn = sqlite3.connect('temudok.db')
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("DELETE FROM appointments WHERE id = ?", (item_id,))
         conn.commit()
         conn.close()
-        return JSONResponse({"status": "success", "message": "Berhasil dihapus!"})
-    except Exception as e:
-        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
-
-@app.put("/update_appointment/{item_id}")
-async def update_appointment(item_id: int, request: Request):
-    try:
-        data = await request.json()
-        conn = sqlite3.connect('temudok.db')
-        cursor = conn.cursor()
-        cursor.execute("UPDATE appointments SET date = ?, time = ?, notes = ? WHERE id = ?", 
-                       (data['date'], data['time'], data['notes'], item_id))
-        conn.commit()
-        conn.close()
-        return JSONResponse({"status": "success", "message": "Berhasil diupdate!"})
+        return JSONResponse({"status": "success"})
     except Exception as e:
         return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=5000)
+    # Gunakan host 0.0.0.0 agar bisa diakses secara publik lewat Render
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
