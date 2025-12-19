@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment | TemuDok</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <nav class="navbar">
+        <div class="logo"><img src="/assets/logo.png" alt="TemuDok Logo"></div>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="doctors.html">Doctors</a></li>
+            <li><a href="articles.html">Articles</a></li>
+            <li><a href="reminders.html">My Reminders</a></li>
+        </ul>
+        
+        <div class="user-dropdown">
+        <span class="user-name" id="userDisplay">Hi, User!</span>
+        <div class="dropdown-content">
+            <a href="profile.html">My Profile</a>
+            
+            <a href="#" id="logoutBtn">Sign Out</a>
+        </div>
+    </div>
+    </nav>
+
+  <section class="appointment-page">
+    <div class="appointment-container">
+        
+        <div class="form-header">
+            <h1>Schedule Appointment</h1>
+            <p style="color:#666; margin-bottom: 20px;">You are booking a consultation with:</p>
+            
+            <div class="doctor-summary">
+                <img src="" id="doctorImage" class="appointment-doctor-img" alt="Doctor" onerror="this.src='/assets/default_doctor.png'">
+                <div class="doctor-name-title" id="doctorNameDisplay">Doctor Name</div>
+                <div id="targetSpecialist" class="specialist-badge">Specialist</div>
+            </div>
+        </div>
+
+        <form id="appointmentForm">
+            <div class="form-group">
+                <label for="name">Patient Name</label>
+                <input type="text" id="name" required placeholder="Enter full name">
+            </div>
+
+            <div class="form-group">
+                <label for="date">Preferred Date</label>
+                <input type="date" id="date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="time">Preferred Time</label>
+                <select id="time">
+                    <option>09:00 AM</option>
+                    <option>11:00 AM</option>
+                    <option>02:00 PM</option>
+                    <option>04:00 PM</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes (Symptoms/Details)</label>
+                <textarea id="notes" rows="3" placeholder="Briefly describe your condition..."></textarea>
+            </div>
+
+            <button type="button" id="confirmBtn" class="book-btn">Confirm Appointment</button>
+        </form>
+    </div>
+  </section>
+
+  <script src="/static/appointment.js"></script>
+  <script src="/static/home.js"></script>
+</body>
+</html>

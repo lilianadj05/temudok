@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TemuDok | Doctors</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+        <div class="logo"><img src="/assets/logo.png" alt="TemuDok Logo"></div>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="doctors.html">Doctors</a></li>
+            <li><a href="articles.html">Articles</a></li>
+            <li><a href="reminders.html">My Reminders</a></li>
+        </ul>
+        
+        <div class="user-dropdown">
+        <span class="user-name" id="userDisplay">Hi, User!</span>
+        <div class="dropdown-content">
+            <a href="profile.html">My Profile</a>
+            
+            <a href="#" id="logoutBtn">Sign Out</a>
+        </div>
+    </div>
+  </nav>
+
+  <h2 class="section-title">Our Available Doctors</h2>
+  
+  <div class="doctors-container">
+    
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Vira Amanda.jpg" alt="dr. Vira Amanda">
+      <div class="doctor-info">
+        <h3>dr. Vira Amanda</h3>
+        <p>General Practitioner</p>
+        <div class="doctor-price">Rp35.000 - 50.000</div>
+        <a href="appointment.html?doctor=dr. Vira Amanda&specialist=General Practitioner&doctorImage=/assets/doctors_page/Vira Amanda.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Peter.jpg" alt="dr. Peter">
+      <div class="doctor-info">
+        <h3>dr. Peter, Sp. PD</h3>
+        <p>Internist</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Peter, Sp. PD&specialist=Internist&doctorImage=/assets/doctors_page/Peter.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Rahayu.jpg" alt="dr. Rahayu">
+      <div class="doctor-info">
+        <h3>dr. Rahayu, Sp. JP</h3>
+        <p>Cardiologist</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Rahayu, Sp. JP&specialist=Cardiologist&doctorImage=/assets/doctors_page/Rahayu.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Alexander.jpg" alt="dr. Alexander">
+      <div class="doctor-info">
+        <h3>dr. Alexander, Sp. S</h3>
+        <p>Neurologist</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Alexander, Sp. S&specialist=Neurologist&doctorImage=/assets/doctors_page/Alexander.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Susilo.jpg" alt="dr. Susilo">
+      <div class="doctor-info">
+        <h3>dr. Susilo, Sp.PD-KH</h3>
+        <p>Hepatologist</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Susilo, Sp.PD-KH&specialist=Hepatologist&doctorImage=/assets/doctors_page/Susilo.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Carlo.jpg" alt="dr. Carlo">
+      <div class="doctor-info">
+        <h3>dr. Carlo, Sp. P</h3>
+        <p>Pulmonologist</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Carlo, Sp. P&specialist=Pulmonologist&doctorImage=/assets/doctors_page/Carlo.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Roberto.jpg" alt="dr. Roberto">
+      <div class="doctor-info">
+        <h3>dr. Roberto, Sp.PD-KGEH</h3>
+        <p>Gastroenterologist</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Roberto, Sp.PD-KGEH&specialist=Gastroenterologist&doctorImage=/assets/doctors_page/Roberto.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Sekar.jpg" alt="dr. Sekar">
+      <div class="doctor-info">
+        <h3>dr. Sekar, Sp. A</h3>
+        <p>Pediatrician</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Sekar, Sp. A&specialist=Pediatrician&doctorImage=/assets/doctors_page/Sekar.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Karina.jpg" alt="dr. Karina">
+      <div class="doctor-info">
+        <h3>dr. Karina, Sp.OG</h3>
+        <p>Gynecologist</p>
+        <div class="doctor-price">Rp150.000 - 200.000</div>
+        <a href="appointment.html?doctor=dr. Karina, Sp.OG&specialist=Gynecologist&doctorImage=/assets/doctors_page/Karina.jpg" class="book-btn">Book Appointment</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      <img src="/assets/logo.png" alt="TemuDok Logo">
+    </div>
+
+    <div class="footer-info">
+        <p><strong>Contact Information</strong></p>
+        <div class="contact-item">
+            <img src="/assets/email.png" alt="Email Icon">
+            <a href="mailto:temudok@gmail.com">temudok@gmail.com</a>
+        </div>
+        <div class="contact-item">
+            <img src="/assets/call_footer.png" alt="Phone Icon">
+            <a href="tel:0218738299">021-8738299</a>
+        </div>
+    </div>
+
+    <div class="footer-social">
+        <a href="#"><img src="/assets/instagram.png" alt="Instagram"></a>
+        <a href="#"><img src="/assets/linkedin.png" alt="LinkedIn"></a>
+        <a href="#"><img src="/assets/facebook_footer.png" alt="Facebook"></a>
+        <a href="#"><img src="/assets/X_footer.png" alt="Twitter"></a>
+    </div>
+
+    <div class="footer-bottom">
+      All Rights Reserved TemuDok.com © 2025 | Privacy Policy & Terms
+    </div>
+  </footer>
+
+  <script src="/static/home.js"></script> 
+
+</body>
+</html>

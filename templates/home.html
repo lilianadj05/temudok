@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TemuDok — Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo"><img src="/assets/logo.png" alt="TemuDok Logo"></div>
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="doctors.html">Doctors</a></li>
+        <li><a href="articles.html">Articles</a></li>
+        <li><a href="reminders.html">My Reminders</a></li>
+    </ul>
+    
+    <div class="user-dropdown">
+      <span class="user-name" id="userDisplay">Hi, User!</span>
+      <div class="dropdown-content">
+          <a href="profile.html">My Profile</a>
+          
+          <a href="#" id="logoutBtn">Sign Out</a>
+      </div>
+  </div>
+</nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <img src="/assets/home_page/doctor_patient.png" alt="Doctor Illustration">
+      </div>
+
+      <div class="hero-right">
+        <h1>Your Health Companion</h1>
+        <p>Find the best specialist based on the symptoms you are experiencing.</p>
+
+        <a class="btn-primary big-btn" href="doctor_recommendation.html">
+          Find Doctors
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SPECIALISTS -->
+  <section class="specialist-section">
+  <h2>Specialist Recommendations</h2>
+  <div class="doctor-cards">
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Karlina_Septianti.jpg" alt="dr. Karlina Septianti">
+      <h3>dr. Karlina Septianti</h3>
+      <p>General Practitioner</p>
+    </div>
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Peter.jpg" alt="dr. Peter, Sp.PD">
+      <h3>dr. Peter, Sp.PD</h3>
+      <p>Internist</p>
+    </div>
+    <div class="doctor-card">
+      <img src="/assets/doctors_page/Rahayu.jpg" alt="dr. Rahayu, Sp.JP">
+      <h3>dr. Rahayu, Sp.JP</h3>
+      <p>Cardiologist</p>
+    </div>
+  </div>
+  <a href="doctors.html" class="find-doctors-btn">Find Other Doctors</a>
+</section>
+
+
+  <!-- ARTICLES (5 horizontal cards) -->
+  <section class="articles">
+    <div class="container">
+      <h2>Medical Articles</h2>
+
+      <div class="article-scroll" role="list">
+        
+        <a href="article_menopause.html" class="article-card" role="listitem">
+          <img src="/assets/articles_page/menopause.jpg" alt="Menopause Guide">
+          <h3>Navigating Menopause: A Comprehensive Guide</h3>
+          <p>Expert insights on managing menopause symptoms and embracing this life stage with confidence.</p>
+        </a>
+
+        <a href="article_diet.html" class="article-card" role="listitem">
+          <img src="/assets/articles_page/diet.jpg" alt="Balanced Diet">
+          <h3>Building a Balanced Diet for Everyday Wellness</h3>
+          <p>Learn how to create balanced meals and choose nutrient-rich foods.</p>
+        </a>
+
+        <a href="article_diabetes.html" class="article-card" role="listitem">
+          <img src="/assets/articles_page/diabetes.jpg" alt="Heart Health">
+          <h3>Understanding Diabetes & Heart Health</h3>
+          <p>Discover how lifestyle choices affect your cardiovascular system and prevention tips.</p>
+        </a>
+
+        <a href="article_sleep.html" class="article-card" role="listitem">
+          <img src="/assets/articles_page/sleep.jpg" alt="Sleep Science">
+          <h3>Sleep & Recovery Science</h3>
+          <p>Why sleep matters and how to improve recovery and daytime performance.</p>
+        </a>
+
+        <a href="article_stress.html" class="article-card" role="listitem">
+          <img src="/assets/articles_page/articles.png" alt="Stress Management">
+          <h3>Stress Management for a Healthy Mind</h3>
+          <p>Practical techniques to reduce stress and keep your mind balanced.</p>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (your provided footer structure) -->
+  <footer>
+    <div class="footer-logo">
+      <img src="/assets/logo.png" alt="TemuDok Logo">
+    </div>
+
+    <div class="footer-info">
+      <p><strong>Contact Information</strong></p>
+      <div class="contact-item">
+        <img src="/assets/email.png" alt="Email Icon">
+        <a href="mailto:temudok@gmail.com">temudok@gmail.com</a>
+      </div>
+      <div class="contact-item">
+        <img src="/assets/call_footer.png" alt="Phone Icon">
+        <a href="tel:0218738299">021-8738299</a>
+      </div>
+    </div>
+
+    <div class="footer-social">
+      <a href="#"><img src="/assets/instagram.png" alt="Instagram"></a>
+      <a href="#"><img src="/assets/linkedin.png" alt="LinkedIn"></a>
+      <a href="#"><img src="/assets/facebook_footer.png" alt="Facebook"></a>
+      <a href="#"><img src="/assets/X_footer.png" alt="Twitter"></a>
+    </div>
+
+    <div class="footer-bottom">
+      All Rights Reserved TemuDok.com © 2025 | Privacy Policy & Terms
+    </div>
+  </footer>
+
+  <script src="/static/home.js"></script>
+
+</body>
+</html>
